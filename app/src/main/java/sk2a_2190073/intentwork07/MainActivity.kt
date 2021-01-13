@@ -1,38 +1,34 @@
 package sk2a_2190073.intentwork07
 
-import android.app.AlertDialog
-import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import java.text.ParseException
 
 class MainActivity : AppCompatActivity() {
-    private val TAG: String = "toridge.main"
 
-
-    data class HMdata(val number: String, val name: String)
+    data class MEMOListdata(val Onum: Int, val memo: String)
+    private lateinit var MEMO: MEMOListdata;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val listView = findViewById<ListView>(R.id.lvMain)
-        val listHM: List<HMdata> = getHMList()
+        val listMEMO: List<MEMOListdata> = getMEMOList()
 
-        val adapter = CustomAdapter(this,listHM)
-        listView.adapter = adapter
+        listView.adapter = CustomAdapter(this,listMEMO)
         listView.onItemClickListener = LIClick()
-        val toast = Toast.makeText(applicationContext, "が押されました。", Toast.LENGTH_LONG)
-              toast.show()
     }
 
     private inner class LIClick: AdapterView.OnItemClickListener{
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
+            if (parent != null)
+                MEMO = parent.getItemAtPosition(position) as MEMOListdata
             when (id.toInt()) {
                 R.id.btn_del -> {
                     //確認ダイアログ表示
@@ -43,17 +39,24 @@ class MainActivity : AppCompatActivity() {
                     //確認ダイアログ表示
                     val toast = Toast.makeText(applicationContext, "リストが押されました。", Toast.LENGTH_LONG)
                     toast.show()
+
+                    try{
+                        val intent = Intent(applicationContext, EditActivity::class.java)
+
+                        intent.putExtra("orderN",MEMO.Onum)
+                        startActivity(intent)
+                    }catch (e: Exception){
+
+                    }
                 }
             }
         }
     }
 
-    private fun getHMList(): MutableList<HMdata> {
-        val list: MutableList<HMdata> = mutableListOf()
-
-
-        list.add(HMdata("AAaaaaa", "++"))
-        list.add(HMdata("AAaaaaa", "++"))
+    private fun getMEMOList(): MutableList<MEMOListdata> {
+        var list: MutableList<MEMOListdata>
+        val sqlite = SQLiteProcess(this@MainActivity)
+        list = sqlite.selectMEMOList()
 
         return list
     }

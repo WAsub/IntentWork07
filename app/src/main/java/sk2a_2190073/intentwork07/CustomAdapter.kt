@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 
-class CustomAdapter(private val activity: Activity,private val items: List<MainActivity.HMdata>) : BaseAdapter() {
+class CustomAdapter(private val activity: Activity,private val items: List<MainActivity.MEMOListdata>) : BaseAdapter() {
 
     private class ViewHolder(row: View) {
-        val numberText = row.findViewById(R.id.lv_memo) as TextView
-        val nameText  = row.findViewById(R.id.btn_del) as Button
+        val memo = row.findViewById(R.id.lv_memo) as TextView
+        val btn_del  = row.findViewById(R.id.btn_del) as Button
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -19,7 +19,7 @@ class CustomAdapter(private val activity: Activity,private val items: List<MainA
         val viewHolder: ViewHolder
         if (convertView == null) {
             val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.list_layout, convertView)
+            view = inflater.inflate(R.layout.list_layout, convertView) //リストレイアウト指定
             viewHolder = ViewHolder(view)
             view.tag = viewHolder
         } else {
@@ -27,13 +27,13 @@ class CustomAdapter(private val activity: Activity,private val items: List<MainA
             viewHolder = view.tag as ViewHolder
         }
 
-        val memberHM = items[position]
-        viewHolder.numberText.text = memberHM.number
-        viewHolder.numberText.setOnClickListener(){
+        val ITEM = items[position]
+        viewHolder.memo.text = ITEM.memo
+        viewHolder.memo.setOnClickListener(){
             (parent as ListView).performItemClick(view , position , getItemId(R.id.lv_memo))
         }
-        viewHolder.nameText.text = memberHM.name
-        viewHolder.nameText.setOnClickListener(){
+        viewHolder.btn_del.text = "ー"
+        viewHolder.btn_del.setOnClickListener(){
             (parent as ListView).performItemClick(view , position , getItemId(R.id.btn_del))
         }
 
