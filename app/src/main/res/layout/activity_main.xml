@@ -5,10 +5,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ListView android:id="@+id/lvMain"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+        <Button android:id="@+id/btncreate"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="＋"/>
+
+    </LinearLayout>
+    <sk2a_2190073.intentwork07.SortableListView
+        android:id="@+id/lvMain"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1" />
+<!--    <ListView android:id="@+id/lvMain"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+
+<!--        />-->
 
 </LinearLayout>
