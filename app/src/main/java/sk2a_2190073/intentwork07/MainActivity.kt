@@ -13,10 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    data class MEMOListdata(val Onum: Int, val memo: String)
+    data class MEMOListdata(val Onum: Int, val memo: String, var backColor: Int)
     private lateinit var MEMO: MEMOListdata
     var _lvMain: SortableListView? = null
-    var adapter:CustomAdapter2? = null
     var mDraggingPosition = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,16 +37,14 @@ class MainActivity : AppCompatActivity() {
 
     /** リストの再読み込みをまとめたやつ */
     fun Load(){
-        val listMEMO: Array<MEMOListdata> = getMEMOList()
+        val sqlite = SQLiteProcess(this)
+        val listMEMO: Array<MEMOListdata> = sqlite.selectMEMOList()
 
         _lvMain = findViewById<View>(R.id.lvMain) as SortableListView
         _lvMain!!.setDragListener(DragListener(mDraggingPosition, _lvMain, listMEMO,this, _lvMain))
         _lvMain!!.setSortable(true)
-        _lvMain!!.adapter = CustomAdapter2(this,listMEMO,mDraggingPosition)
-//        listView.adapter = CustomAdapter(this,listMEMO)
+        _lvMain!!.adapter = CustomAdapter2(this, listMEMO, mDraggingPosition, this@MainActivity)
         _lvMain!!.onItemClickListener = LIClick()
-//        _lvMain!!.setOnDragListener(Drag())
-//        _lvMain!!.onItemLongClickListener = LILongClick()
     }
 
     /** 付箋の編集へ */
@@ -78,14 +75,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun getMEMOList(): Array<MEMOListdata> {
-        var list: Array<MEMOListdata>
-        val sqlite = SQLiteProcess(this)
-        list = sqlite.selectMEMOList()
-
-        return list
     }
 
 }

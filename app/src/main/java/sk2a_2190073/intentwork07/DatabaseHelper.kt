@@ -14,7 +14,8 @@ class DatabaseHelper(context: Context?):
         //テーブル作成用
         const val CREATE_TABLE_MEMO = ("CREATE TABLE memo ("
                 + "_id INTEGER PRIMARY KEY,"
-                + "memo TEXT"
+                + "memo TEXT,"
+                + "backColor INTEGER"
                 + ");")
         const val CREATE_TABLE_ORDER = ("CREATE TABLE memoOrder ("
                 + "_id INTEGER PRIMARY KEY,"
@@ -22,7 +23,7 @@ class DatabaseHelper(context: Context?):
                 + "FOREIGN KEY(memoId) REFERENCES memo(_id)"
                 + ");")
         const val INSERT_MEMO = (
-                "INSERT INTO memo (memo) VALUES (\"あいうえおかきくけこさしすせそ\nあいうえお\")"
+                "INSERT INTO memo (memo, backColor) VALUES (\"あいうえおかきくけこさしすせそ\nあいうえお\", 0)"
                 )
         const val INSERT_MEMO_ORDER = (
                 "INSERT INTO memoOrder (memoId) VALUES (1)"

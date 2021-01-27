@@ -1,0 +1,14 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="false">
+        <shape android:shape="oval">
+            <solid android:color="@color/C_hakuai" />
+            <stroke android:width="5dp" android:color="@color/C_wisteria" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape android:shape="oval">
+            <solid android:color="@color/C_hakuai" />
+            <stroke android:width="5dp" android:color="@color/C_wisteria" />
+        </shape>
+    </item>
+</selector>

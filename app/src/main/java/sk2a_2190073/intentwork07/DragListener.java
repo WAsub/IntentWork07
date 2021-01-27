@@ -61,7 +61,7 @@ public class DragListener extends SortableListView.SimpleDragListener {
         mDraggingPosition = -1;
         mListView.invalidateViews();
         SQLiteProcess sqlite = new SQLiteProcess(con);
-        sqlite.sortMemoOrder(PREFS, _lvMain, mDraggingPosition);
+        sqlite.sortMemoOrder(PREFS, _lvMain, mDraggingPosition, con);
         return super.onStopDrag(positionFrom, positionTo);
     }
 }

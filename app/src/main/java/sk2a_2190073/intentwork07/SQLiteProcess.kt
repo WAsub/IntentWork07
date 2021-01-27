@@ -15,7 +15,7 @@ class SQLiteProcess(private val con: Context){
         val db = helper.writableDatabase
         var items: Array<MainActivity.MEMOListdata> = arrayOf()
         try{
-            val sqlSEL = "SELECT mO._id, SUBSTR(m.memo, 1, 20) AS memoV " +
+            val sqlSEL = "SELECT mO._id, SUBSTR(m.memo, 1, 20) AS memoV, m.backColor " +
                          "FROM memoOrder AS mO " +
                          "INNER JOIN memo AS m " +
                          "ON mO.memoId = m._id"
@@ -23,9 +23,11 @@ class SQLiteProcess(private val con: Context){
             while(cursor.moveToNext()){
                 val idxID = cursor.getColumnIndex("_id")
                 val idxmemoV = cursor.getColumnIndex("memoV")
+                val idxcolor = cursor.getColumnIndex("backColor")
                 items += MainActivity.MEMOListdata(
                     cursor.getInt(idxID),
-                    cursor.getString(idxmemoV)
+                    cursor.getString(idxmemoV),
+                    cursor.getInt(idxcolor)
                 )
             }
         }finally {
@@ -35,13 +37,13 @@ class SQLiteProcess(private val con: Context){
     }
     /**********************************************************************************************/
 
-    /** 編集するメモ取得用 *///TODO 背景色パラメータ　ayyay
-    fun selectMEMO(orderN: Int): MutableList<EditActivity.MEMOdata>{
+    /** 編集するメモ取得用 */
+    fun selectMEMO(orderN: Int): Array<EditActivity.MEMOdata>{
         val helper = DatabaseHelper(con)
         val db = helper.writableDatabase
-        val items: MutableList<EditActivity.MEMOdata> = mutableListOf()
+        var items: Array<EditActivity.MEMOdata> = arrayOf()
         try{
-            val sqlSEL = "SELECT memoOrder._id, memoOrder.memoId, memo.memo " +
+            val sqlSEL = "SELECT memoOrder._id, memoOrder.memoId, memo.memo, memo.backColor " +
                     "FROM memoOrder " +
                     "INNER JOIN memo " +
                     "ON memoOrder.memoId = memo._id " +
@@ -51,11 +53,13 @@ class SQLiteProcess(private val con: Context){
                 val idxID = cursor.getColumnIndex("_id")
                 val idxmemoID = cursor.getColumnIndex("memoId")
                 val idxmemo = cursor.getColumnIndex("memo")
-                items.add(EditActivity.MEMOdata(
+                val idxcolor = cursor.getColumnIndex("backColor")
+                items += EditActivity.MEMOdata(
                     cursor.getInt(idxID),
                     cursor.getInt(idxmemoID),
-                    cursor.getString(idxmemo)
-                ))
+                    cursor.getString(idxmemo),
+                    cursor.getInt(idxcolor)
+                )
             }
         }finally {
             db.close()
@@ -65,27 +69,26 @@ class SQLiteProcess(private val con: Context){
     /**********************************************************************************************/
 
     /** 編集したメモ保存用 */
-    fun updateMEMO(ID: Int, memo: String) {
+    fun updateMEMO(ID: Int, memo: String, backColor: Int) {
         val helper = DatabaseHelper(con)
         val db = helper.writableDatabase
         try {
-            val sqlUP = "UPDATE memo SET memo = \"${memo}\" WHERE _id = ${ID}"
+            val sqlUP = "UPDATE memo SET memo = \"${memo}\", backColor = ${backColor} WHERE _id = ${ID}"
             val stmt = db.compileStatement(sqlUP)
             stmt.executeUpdateDelete()
         } finally {
             db.close()
         }
-
     }
     /**********************************************************************************************/
 
-    /** 新規作成したメモの登録 */
-    fun insertMEMO(memo: String){
+    /** 新規作成したメモの保存用 */
+    fun insertMEMO(memo: String, backColor: Int){
         val helper = DatabaseHelper(con)
         val db = helper.writableDatabase
         try {
             /** memo表に登録 */
-            var sqlIN = "INSERT INTO memo(memo) VALUES(\"${memo}\")"
+            var sqlIN = "INSERT INTO memo(memo, backColor) VALUES(\"${memo}\", ${backColor})"
             var stmt = db.compileStatement(sqlIN)
             stmt.executeInsert()
 
@@ -179,7 +182,7 @@ class SQLiteProcess(private val con: Context){
     /**********************************************************************************************/
 
     /** メモの並び替え */
-    fun sortMemoOrder(items: Array<MainActivity.MEMOListdata>, _lvMain: SortableListView, mDraggingPosition: Int){
+    fun sortMemoOrder(items: Array<MainActivity.MEMOListdata>, _lvMain: SortableListView, mDraggingPosition: Int, con: Context){
         /** 旧付箋リストのメモIDリストを取得 */
         val M_id: Array<Int> = getM_id()
 
@@ -194,7 +197,7 @@ class SQLiteProcess(private val con: Context){
         /** 新しい付箋リストを取得 */
         val newitems = selectMEMOList()
         /** 付箋リストを更新 */
-        _lvMain.adapter = CustomAdapter2(con as Activity,newitems,mDraggingPosition)
+        _lvMain.adapter = CustomAdapter2(con as Activity,newitems,mDraggingPosition, con)
     }
     // 新しい順番のmemoOrderを登録
     private fun renewMemoOrder(newM_id: Array<Int>){
