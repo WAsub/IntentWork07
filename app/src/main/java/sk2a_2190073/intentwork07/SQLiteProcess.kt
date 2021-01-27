@@ -1,5 +1,6 @@
 package sk2a_2190073.intentwork07
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -7,10 +8,10 @@ import androidx.annotation.RequiresApi
 class SQLiteProcess(private val con: Context){
 
     data class MemoOrder(val Onum: Int, val Mnum: Int)
-    fun selectMEMOList(): MutableList<MainActivity.MEMOListdata>{
+    fun selectMEMOList(): Array<MainActivity.MEMOListdata>{
         val helper = DatabaseHelper(con)
         val db = helper.writableDatabase
-        val items: MutableList<MainActivity.MEMOListdata> = mutableListOf()
+        var items: Array<MainActivity.MEMOListdata> = arrayOf()
         try{
             val sqlSEL = "SELECT mO._id, SUBSTR(m.memo, 1, 20) AS memoV " +
                          "FROM memoOrder AS mO " +
@@ -20,10 +21,10 @@ class SQLiteProcess(private val con: Context){
             while(cursor.moveToNext()){
                 val idxID = cursor.getColumnIndex("_id")
                 val idxmemoV = cursor.getColumnIndex("memoV")
-                items.add(MainActivity.MEMOListdata(
+                items += MainActivity.MEMOListdata(
                     cursor.getInt(idxID),
                     cursor.getString(idxmemoV)
-                ))
+                )
             }
         }finally {
             db.close()
@@ -105,6 +106,40 @@ class SQLiteProcess(private val con: Context){
             db.close()
         }
     }
+    private fun renewMemoOrder(MO: ArrayList<Int>){
+        val helper = DatabaseHelper(con)
+        val db = helper.writableDatabase
+        try{
+            val sqlDEL = "DELETE FROM memoOrder"
+            var stmt = db.compileStatement(sqlDEL)
+            stmt.executeUpdateDelete()
+
+            for(i in MO) {
+                val sqlIN = "INSERT INTO memoOrder(memoId) VALUES(${i})"
+                stmt = db.compileStatement(sqlIN)
+                stmt.executeInsert()
+            }
+        }finally {
+            db.close()
+        }
+    }
+    private fun getM_id(): ArrayList<Int>{
+        val helper = DatabaseHelper(con)
+        val db = helper.writableDatabase
+        var M_id: ArrayList<Int> = arrayListOf()
+        try{
+            val sqlSEL = "SELECT memoId FROM memoOrder ORDER BY _id asc"
+            val cursor = db.rawQuery(sqlSEL, null)
+            while(cursor.moveToNext()){
+                val idxmemoID = cursor.getColumnIndex("memoId")
+                M_id.add(cursor.getInt(idxmemoID))
+            }
+        }catch(e: Exception){
+        }finally {
+            db.close()
+        }
+        return M_id
+    }
     private fun getM_id(O_id: Int): Int{
         val helper = DatabaseHelper(con)
         val db = helper.writableDatabase
@@ -172,5 +207,22 @@ class SQLiteProcess(private val con: Context){
             db.close()
         }
     }
+
+    fun sortMemoOrder(items: Array<MainActivity.MEMOListdata>,_lvMain: SortableListView,mDraggingPosition: Int){
+        var M_id: ArrayList<Int> = getM_id()
+        var newM_id: ArrayList<Int> = arrayListOf()
+        var newitems: Array<MainActivity.MEMOListdata> = arrayOf()
+
+        var j = 1
+        for(i in items) {
+            newM_id.add(M_id[i.Onum-1])
+            newitems += MainActivity.MEMOListdata(j,i.memo)
+            j++
+        }
+        renewMemoOrder(newM_id)
+
+        _lvMain.adapter = CustomAdapter2(con as Activity,newitems,mDraggingPosition)
+    }
+
 
 }
