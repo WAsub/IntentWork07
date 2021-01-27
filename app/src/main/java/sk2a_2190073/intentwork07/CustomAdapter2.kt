@@ -1,8 +1,6 @@
 package sk2a_2190073.intentwork07
 
 import android.app.Activity
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -20,9 +18,7 @@ class CustomAdapter2(private val activity: Activity,private val items: Array<Mai
         (convertView1!!.findViewById(R.id.lv_memon) as TextView).text = ITEM.Onum.toString()
         (convertView1!!.findViewById(R.id.lv_memo) as TextView).text = ITEM.memo
         (convertView1!!.findViewById(R.id.lv_memo) as TextView).visibility = if (position == mDraggingPosition) View.INVISIBLE else View.VISIBLE
-//        val view = convertView1 as TextView
-//        view.text = items[position]
-//        view.visibility = if (position == mDraggingPosition) View.INVISIBLE else View.VISIBLE
+
         return convertView1
     }
 

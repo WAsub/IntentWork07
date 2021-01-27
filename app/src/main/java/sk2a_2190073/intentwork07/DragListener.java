@@ -1,9 +1,6 @@
 package sk2a_2190073.intentwork07;
 
-
 import android.content.Context;
-import android.widget.ListView;
-import android.widget.Toast;
 
 public class DragListener extends SortableListView.SimpleDragListener {
     private static  MainActivity.MEMOListdata[] PREFS;
