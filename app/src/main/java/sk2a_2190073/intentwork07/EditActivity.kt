@@ -86,6 +86,9 @@ class EditActivity : AppCompatActivity() {
                         dlg.show()
                     }
                 }
+                R.id.btncolor -> {
+
+                }
 
             }
         }

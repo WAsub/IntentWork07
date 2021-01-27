@@ -29,7 +29,7 @@
         android:orientation="horizontal"
         android:background="#777777">
 
-    <Button
+    <Button android:id="@+id/btncolor"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:background="@drawable/btn_color_back_state"
