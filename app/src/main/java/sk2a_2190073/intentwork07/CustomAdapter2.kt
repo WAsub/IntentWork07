@@ -34,7 +34,7 @@ class CustomAdapter2(
             )
         }
         val ITEM = items[position]
-        (convertView1!!.findViewById(R.id.lv_memon) as TextView).text = ITEM.Onum.toString()
+//        (convertView1!!.findViewById(R.id.lv_memon) as TextView).text = ITEM.Onum.toString()
         (convertView1!!.findViewById(R.id.lv_memo) as TextView).text = ITEM.memo
         (convertView1!!.findViewById(R.id.lv_memo) as TextView).background = getDrawable(con, C_id[ITEM.backColor])
         (convertView1!!.findViewById(R.id.lv_memo) as TextView).visibility = if (position == mDraggingPosition) View.INVISIBLE else View.VISIBLE

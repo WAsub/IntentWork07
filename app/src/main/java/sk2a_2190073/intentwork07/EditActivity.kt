@@ -80,7 +80,13 @@ class EditActivity : AppCompatActivity() {
     /** アクションバーの読み込み */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.option_menu, menu)
+        if(Onum == 0){
+            //新規作成
+            inflater.inflate(R.menu.option_menu_edit_new, menu)
+        }else{
+            //編集
+            inflater.inflate(R.menu.option_menu_edit_edit, menu)
+        }
         return true
     }
     /** アクションバーのボタンの処理 */
