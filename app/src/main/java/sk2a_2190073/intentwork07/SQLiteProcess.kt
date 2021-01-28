@@ -122,62 +122,31 @@ class SQLiteProcess(private val con: Context){
     }
     /**********************************************************************************************/
 
-    /** メモの削除用 *///TODO 全体的に改修が必要
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun deleteMEMO(O_id: Int){
-//        val M_id: Int = getM_id(O_id)
-//
-//        var MO: MutableList<MemoOrder> = selectMemoOrder()
-//        MO.removeIf{ it.Mnum == M_id }
-//        renewMemoOrder(MO)
-//
-//        val helper = DatabaseHelper(con)
-//        val db = helper.writableDatabase
-//        try {
-//            var sqlDEL = "DELETE FROM memo WHERE _id = ${M_id}"
-//            var stmt = db.compileStatement(sqlDEL)
-//            stmt.executeUpdateDelete()
-//        } finally {
-//            db.close()
-//        }
-    }
-    // 指定した主キーの memoId
-    private fun getM_id(O_id: Int): Int{
+    /** メモの削除用 */
+    fun deleteMEMO(MEMODATA: Array<EditActivity.MEMOdata>){
+        /** 旧付箋リストのメモIDリストを取得 */
+        val M_id: Array<Int> = getM_id()
+
+        /** 削除するメモを取り除く */
+        var newM_id: Array<Int> = arrayOf()
+        for(M in M_id){
+            if(M != MEMODATA[0].Mnum){
+                newM_id += M
+            }
+        }
+        /** 新しい memoOrder を登録 */
+        renewMemoOrder(newM_id)
+
+        /** メモ本体を削除 */
         val helper = DatabaseHelper(con)
         val db = helper.writableDatabase
-        var M_id: Int = 0;
-        try{
-            val sqlSEL = "SELECT memoId FROM memoOrder WHERE _id = ${O_id}"
-            val cursor = db.rawQuery(sqlSEL, null)
-            while(cursor.moveToNext()){
-                val idxmemoID = cursor.getColumnIndex("memoId")
-                M_id = cursor.getInt(idxmemoID)
-            }
-        }finally {
+        try {
+            var sqlDEL = "DELETE FROM memo WHERE _id = ${MEMODATA[0].Mnum}"
+            var stmt = db.compileStatement(sqlDEL)
+            stmt.executeUpdateDelete()
+        } finally {
             db.close()
         }
-        return M_id
-    }
-    // memoOrder全て取得 TODO Array
-    private fun selectMemoOrder(): MutableList<MemoOrder>{
-        val helper = DatabaseHelper(con)
-        val db = helper.writableDatabase
-        val items: MutableList<MemoOrder> = mutableListOf()
-        try{
-            val sqlSEL = "SELECT * FROM memoOrder"
-            val cursor = db.rawQuery(sqlSEL, null)
-            while(cursor.moveToNext()){
-                val idxID = cursor.getColumnIndex("_id")
-                val idxmemoID = cursor.getColumnIndex("memoId")
-                items.add(MemoOrder(
-                    cursor.getInt(idxID),
-                    cursor.getInt(idxmemoID)
-                ))
-            }
-        }finally {
-            db.close()
-        }
-        return items
     }
     /**********************************************************************************************/
 
@@ -198,6 +167,8 @@ class SQLiteProcess(private val con: Context){
         val newitems = selectMEMOList()
         /** 付箋リストを更新 */
         _lvMain.adapter = CustomAdapter2(con as Activity,newitems,mDraggingPosition, con)
+        _lvMain.setDragListener(DragListener(mDraggingPosition, _lvMain, newitems,con, _lvMain))
+        _lvMain.setSortable(true)
     }
     // 新しい順番のmemoOrderを登録
     private fun renewMemoOrder(newM_id: Array<Int>){

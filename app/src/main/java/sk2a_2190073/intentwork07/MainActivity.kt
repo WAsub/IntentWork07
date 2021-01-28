@@ -1,13 +1,14 @@
 package sk2a_2190073.intentwork07
 
+import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
-import android.widget.ListView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         Load()
         val _btnsave: Button = findViewById(R.id.btncreate)
         _btnsave.setOnClickListener(BClick())
+
     }
 
     /** EditActivityから戻ってきたときの動作 */

@@ -15,16 +15,8 @@
     <color name="C_wisteria">#a59aca</color>
     <color name="C_dull">#727171</color>
 
-    <array name="C_id">
-        <item>@color/C_generate</item>
-        <item>@color/C_coral</item>
-        <item>@color/C_citrus</item>
-        <item>@color/C_rapeBlossoms</item>
-        <item>@color/C_brightGreen</item>
-        <item>@color/C_bamboo</item>
-        <item>@color/C_sky</item>
-        <item>@color/C_hakuai</item>
-        <item>@color/C_wisteria</item>
-        <item>@color/C_dull</item>
-    </array>
+    <color name="C_nureba">#000b00</color>
+    <color name="C_kesizumi">#524e4d</color>
+    <color name="C_ai">#165e83</color>
+    <color name="C_transparent">#00165e83</color>
 </resources>

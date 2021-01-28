@@ -2,11 +2,15 @@ package sk2a_2190073.intentwork07
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
@@ -73,12 +77,42 @@ class EditActivity : AppCompatActivity() {
         _btncolor!!.setOnClickListener(BClick())
 
     }
+    /** アクションバーの読み込み */
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.option_menu, menu)
+        return true
+    }
+    /** アクションバーのボタンの処理 */
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.actRemove -> {
+            /** 削除ボタン */
+//            val toast = Toast.makeText(applicationContext, "アクションが押されました。", Toast.LENGTH_SHORT)
+//            toast.show()
+            val dlg = AlertDialog.Builder(this@EditActivity)
+
+            dlg.setTitle("削除")
+            dlg.setMessage("削除しますか")
+            dlg.setPositiveButton("削除") { _, _ ->
+                val sqlite = SQLiteProcess(this@EditActivity)
+                sqlite.deleteMEMO(MEMO)
+                //付箋リストに戻る
+                onBackPressed()
+            }
+            dlg.setNegativeButton("いいえ") { _, _ ->
+
+            }
+            dlg.show()
+
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
+    }
 
     /** バックボタンを押したら付箋リストに戻る */
     override fun onBackPressed() {
-        val toast = Toast.makeText(applicationContext, "ボタンが押されました。", Toast.LENGTH_SHORT)
-        toast.show()
-
         val intent = Intent()
         setResult(RESULT_OK, intent)
         finish()
@@ -127,9 +161,8 @@ class EditActivity : AppCompatActivity() {
                         sqlite.updateMEMO(MEMO[0].Mnum, sb, MEMO[0].backColor)
                     }
 
-                    val intent = Intent()
-                    setResult(RESULT_OK, intent)
-                    finish()
+                    //付箋リストに戻る
+                    onBackPressed()
                 }
                 R.id.btncolor -> {
                     if(++MEMO[0].backColor == C_id.count())
